@@ -6,6 +6,11 @@
 #set page(paper: "a4", numbering: "1")
 #set text(font: "TeX Gyre Pagella" , size: 14pt)
 #set heading(numbering: "1.1.")
+#show heading: set block(below: 1.5em)
+#set par(
+  // first-line-indent: (amount: 1.5em, all: true),
+  spacing: 1.5em)
+#set list(spacing: 1em)
 #show quote: set pad(x: 3em)
 
 #show outline.entry: set block(above: 1.2em)
@@ -240,7 +245,7 @@ An *actor* is a *role the user plays* when they interact with a system. They _pe
 
 Actors don't have to be human.
 
-= Goal-Design Scale (unclear why a scale, but ok)
+= Goal-Design Scale
 
 - _Goal Level_ requirements satisfy business goals, e.g. calculations hit 5%
 - _Domain Level_ requirements satisfy the activities that go on outside the product, e.g. products support cost recording and quotation with experience data, e.g. product supports cost recording and quotation with experience data
@@ -520,9 +525,14 @@ In DbC:
 - A _service consumer_ must ensure that a service on a provider is only ever invoked *when the service's preconditions are met*.
 - A _service provider_ must ensure that *after successful completion of a service, the postconditions are met*.
 - Invariants of the service provider must be held *after the successful execution* of any externally visible service(s).
-- Subclasses can only *weaken service pre-conditions* or *strengthen service post-conditions*
+-Subclasses can only *weaken service pre-conditions* or *strengthen service post-conditions*
 
+The benefits of DbC are
 
+- Explicit notion of contextualized correctness
+- Enforces _seperation of concerns_, which helps assign responsbilities to the correct class(es)
+- Facilitates _testing_ and _debugging_
+- Enhances _documentation_
 
 === Abstract State v.s. Concrete State.
 
@@ -616,3 +626,331 @@ Coupling and Cohesion are *measures* of *how well the parts of a system are tied
 )
 
 The goal of good OOD is to have *weak coupling* (system parts are independent and changing one shouldn't change others) and *strong cohesion* (code is tightly related, each module has one purpose)
+
+= Patterns
+
+== What are patterns?
+
+*Patterns* are problems that *occurs over and over again*, and described the *core of the solution* to the problem. *Design patterns* are _standard solutions_ to common software design problems.
+
+The following are *not* design patterns:
+
+- *Algorithms*. They solve _computation problems_, not _design problems_.
+- *Software components*. Design patterns describe a _way_ to solve a problem, and document pros and cons of implementations. Software components are _implementations_ which may be implemented _using_ design patterns
+- *Frameworks*. Frameworks *implement a "generic" software architecture*, while a design pattern _documents_ the solution to a specific problem. Frameworks may be _used and documented_ with design patterns, and design patterns are *drawn from experience* with multiple applications solving related problems
+
+== What do patterns solve?
+
+Software design patterns _document design experience_ by:
+
+- *Enabling widespread reuse* of software structures
+- *Improving communication* within and across software teams
+- *Capture knowledge* that experienced developers _already_ understand implicitly.
+- Arise from *practical experience*, and *faciliate* training of new developers.
+- *Transcend "programming-language centric"* viewpoints.
+
+== Idioms, Frameworks, Libraries
+
+An *idiom* is a *low-level pattern* specific to a programming language, and describes how to implement *particular aspects of components* or *the relationships between them* using features of the programming language.
+
+Some example idioms include:
+
+- *Delegation* is when an object *delegates* some of its work to another object. It is *more flexible, less structured* than interface; and is one of the _most basic_ object-oriented idioms.
+- *Interfaces*. Interfaces can be used to keep *clients* of a service *independent of classes that provide the service*.
+  - In particular, if a *concrete class* is a service provider, then only instances of that class _or_ its subclasses can be used in the future. By using interfaces, an instance of _any_ classes that implement the interface can be used to provide the service.
+
+== Comparison of definitions
+
+#figure(
+  table(
+    columns: (auto, auto),
+    align: horizon + center,
+    inset: 5pt,
+    table.header(
+      [*Term*], [*Definition*]
+    ),
+    [*Idiom*], [Idioms are *common programming techniques and conventions*, and are often _language-specfic_],
+    [*Pattern*], [Patterns document *common solutions* to *design problems*, and are _language-independent_],
+    [*Libraries*], [Libraries are *collections of functions, procedures or abstractions* that can be used in many applications],
+    [*Frameworks*], [
+      Frameworks are *open libraries* that define the *generic architecture* of an application, and can be extended by adding or deriving new classes.
+
+      Frameworks typically make use of *common idioms* and *patterns*
+    ]
+  ),
+  caption: [Definition of Idioms, Patterns, Libraries and Frameworks]
+)
+
+In traditional application architectures, *user code makes use of library functionality* in the form of procedures of classes. A framework _reverses_ this relationship by providing both *generic functionality* and *application architecture*. Frameworks therefore calls user classes.
+
+== Design Patterns
+
+A *design pattern* provides a *scheme* for *refining the subsystems or components* of a software system, or the relationships between them. It describes a *commonly-recurring structure* of *communicating components* that solve a *general-design problem* within *a particular context*
+
+The format of a pattern consists of:
+
+- *Pattern Name* and *Classification*, which should convey the essence of a pattern
+- *The Problem Forces*, a.k.a when to apply the pattern:
+  - *Intent*: Short Statement of rationale and intended usem i.e.
+  - *Motivation*: A problem scenario and example solution, i.e.
+  - *Applicability*: in which solutions can the pattern be applied
+- *The Solution* *Abstract* description of design elements:
+  - *Structure*: Class and scenario diagrams
+  - *Participants*: participating classes/objects and their responsibilities
+  - *Collaborators*: how participants carry out responsibilities
+- *The Consequences*: results and trade-offs of applying the pattern
+  - *Implementation*: pitfalls, hints, techniques, language issues etc.
+  - *Sample Code*: illustrative examples in various programming languages
+  - *Known Uses*: examples of the pattern found in real systems
+  - *Related Patterns*: competing and supporting patterns
+
+=== Common Patterns
+
+Some common patterns include:
+
+- *Factory Method*: Introduce a `Factory` method in a base class/interface and delegate the decision with concrete classes to instantiate to subclasses
+- *Strategy*: Define a *common interface* for the family of algorithms and have *specific implementations implement the interface*
+- *Composite*: Define a *common interface* (or *abstract base classes*) that both *parts* and *composites* implement from.
+- *Observer*: An *observer* object _publishes_ state change events to its *subscribers*, who must implement a common interface for _receiving notification_.
+  - Note that notification can be slow if there are _many observers for one observable_, or if _observers are observable_.
+- *Null Object*: Implements the interface, but *does nothing*.
+- *Singleton*: Introduce a *singleton* class that keeps track of a _static reference_ to its only instance, and provide a static method to access this sole instance.
+- *Command*: Encapsulate requests in `Command` objects that can be passed around and executed when ready.
+
+== Other kinds of patterns
+
+Patterns are not limited to software designs, they can be found in many more problem domains:
+
+- *Re-engineering* patterns
+- *Usability* patterns
+- *Documentation* patterns
+- *Organizational* patterns
+
+There are also _pattern systems_, since patterns *do not exist in isolation*, they always work together with other patterns. A plain catalogue of patterns does not reflect all realtionships, they should be *intervowen*.
+
+= Software Architectures
+
+#quote(block: true, attribution: [Dewayne Perry and Alexander Wolf, 1992])[
+  A software architecture is a set of architectural (design) elements that have a particular form. Properties constrain the choice of architectural elements whereas rationale captures the motivation for the choice of elements and form.
+]
+
+The architecture of a software system is (often) described as:
+
+- The *structures of its high-level processing elements*
+- The *Externally visible properties* of the processing elements
+- The *Relationships* between them.
+
+A *rationale* explains *why a decision was made* and *what the implications are in changing it*. It can be used to explain:
+
+- *implications of systemwide design choices*
+- *effects on the architecture* in the context of add/removing requirements
+
+== Subsystems, Modules, Components
+
+A *sub-system* is a *system* (in its own right) whose operation is *independent* of the services provided by other subsystems.
+
+A *module* is a system component that *provides services* to other components, but would *not* normally be considered as a seperate system.
+
+A *component* is an independently deliverable unit of software that _encapsulates its design and implementation_, and offers interfaces to the outside; by which it may be composed with other components to form a larger whole.
+
+== Why use architectures?
+
+Architectures are the *technical interface* between the customer and the contractor building a system. A bad architecture *can not be rescued by good constructions*. There are *specialized types*, and *styles* of software architecture.
+
+Furthermore:
+
+- Architectural styles document *existing, well-proven* design experience
+- Architectures *identify and classify* abstractions that are a *higher* level of abstraction compared to simple programming language constructs
+- Architectural styles rovide a *common vocabulary* and *understanding* for design principles.
+- Reference Architectures support the construction of software with well-defined properties.
+- Guidelines help to choose suitable architectures given the problem domain or required quality attributes.
+
+$=>$ Architectures help to manage software complexity.
+
+== Architectural Styles
+
+An *Architectural Style* defines a *family of software systems* in terms of their *structural organization*. It expresses *components and their relationships* with the constraints of the application, and the associated
+ _composition and design rules_ for the construction.
+
+Some popular architectural styles are:
+
+- *Data-flow architectures*: Batch Sequential, Pipes-and-Filter
+- *Call-and-return architectures*: Client-Server, Layered, Object Oriented, etc
+- *Data-centered architectures*: Repository, Blackbaord
+- *Virtual machine architectures*: Interpreter, rule-based systems
+- *Independent Component Architectures*: P2P, Event-Driven
+
+=== Layered Architectures
+
+#figure(
+  diagram(
+    node-stroke: 1pt,
+    let (a, b, d, n) = ((0, 0), (0, -1), (0, -2), (0, -3)),
+    node(a, [Layer 1]),
+    node(b, [Layer 2]),
+    node(d, [...], shape: rect),
+    node(n, [Layer $n$]),
+    edge(a, b, "->"),
+    edge(b, d, "->"),
+    edge(d, n, "->")
+  ),
+  caption: [Visualization of Layered Architecture]
+)
+
+A *layered architecture* organizes a system/module/component into a *set of layers* each of which *provide a set of services to the layer above* and *uses services from the layer below*.
+
+Elements in each layer can only see other elements in the same layer, or the layer below. Callbacks may be used to communicate to higher layers.
+
+=== Dataflow Architecture
+
+#figure(
+  diagram(
+    node-stroke: 1pt,
+    spacing: 0.75cm,
+    let (a, b, c, d, e) = ((0, 0), (1, 0), (2, 0), (3, 0), (4, 0)),
+    node(a, [Input]),
+    node(b, [Component 1]),
+    node(c, [...], shape: rect),
+    node(d, [Component $n$]),
+    node(e, [Output]),
+    edge(a, b, "->"),
+    edge(b, c, "->"),
+    edge(c, d, "->"),
+    edge(d, e, "->")
+  ),
+  caption: [Visualization of Dataflow Architecture]
+)
+
+In a data-flow architecture, each components perform *functional transformations* on its inputs to *create outputs*.
+
+Its main elements include:
+- Data *sources* and data *sinks*
+- *Filters* and *Transformers*
+
+The data is organized so that each processing element (a _filter_) is discrete and only carry _one_ type of data information. The data flows from one processing element to another for processing. In general, there is a single input and output.
+
+=== Repository Architectures
+
+#let r = 1.4
+#let points = ()
+#let offset = (2, 2)
+#let n = 4
+#for i in range(1, n + 1){
+  let x = -r * calc.cos(i * calc.pi * 2 / n) + offset.at(0)
+  let y = -r * calc.sin(i * calc.pi * 2 / n) + offset.at(1)
+  points.push((x, y))
+}
+
+#figure(
+  diagram(
+    node-stroke: 1pt,
+
+    node(offset, [Repo], shape: rect),
+    for (idx, point) in points.enumerate(){
+      node(point, [Component #(idx + 1)], shape: rect)
+      edge(point, offset, "->")
+      edge(point, offset, "<-")
+    },
+  ),
+  caption: [Visualization of Repository Architecture]
+)
+
+In a *repository architecture*, all data is managed in a *central repository* that is *accessible to all system components*. Components do not interact directly, only through the repository.
+
+Howver, this means that components must agree on a repository data model, there is no scope, and it's difficult to distribute evenly. Examples are DB-based information systems, and document repositories.
+
+=== Client-server Architectures
+
+#figure(
+  diagram(
+    node-stroke: 1pt,
+    spacing: 0.75cm,
+    let c = (2, 1.5),
+    node(c, [Central Registry]),
+    for (i, v) in ("1", "2", "...", "n").enumerate(){
+      node((0, i), [Client #v])
+      edge((0, i), c, "<->")
+      node((4, i), [Server #v])
+      edge((4, i), c, "<->")
+    }
+  ),
+  caption: [Visualization of client-server architecture]
+)
+
+In a *client-server architecture*, application logics and services are *distributed to a number of client and server subsystems*, each (potentially) running on a different machine and communication through the network.
+
+Some advantages are straightforward distribution data, effective use of networked systems, and easy to add new servers. Some disadvnatages are lack of shared data model, redundant management, and require a _central registry_ of available names and services.
+
+=== Event-driven architectures
+
+#figure(
+  diagram(
+    node-stroke: 1pt,
+    spacing: 2cm,
+    let c = (2, 1.5),
+    node(c, [Observable]),
+    for (i, v) in ("1", "2").enumerate(){
+      node((0, i + 1), [Observer \##i])
+      edge((0, i + 1), c, "<-", label: "Event")
+      // node((4, i), [Server \##i])
+      // edge((4, i), c, "<-")
+    }
+  ),
+  caption: [Visualization of client-server architecture]
+)
+
+
+In an *event-driven architecture*, components perform services *in reaction to external events* generated by other components. It has some models:
+- *Interrupt-driven*: *real time interrupts* are detected by an *interrupt handler* and passed to some other component for processing.
+- *Broadcast*: an event is broadcasted to all subsystems, and any system that can handle the event will handle it.
+
+=== Peer-to-peer architectures
+
+#let r = 1.6
+#let points = ()
+#let offset = (2, 2)
+#let n = 4
+#for i in range(1, n + 1){
+  let x = -r * calc.cos(i * calc.pi * 2 / n + calc.pi / 4) + offset.at(0)
+  let y = -r * calc.sin(i * calc.pi * 2 / n + calc.pi / 4) + offset.at(1)
+  points.push((x, y))
+}
+
+#figure(
+  diagram(
+    node-stroke: 1pt,
+
+    // node(offset, [Repo], shape: rect),
+    for (idx, point) in points.enumerate(){
+      node(point, [Peer #(idx + 1)], shape: rect)
+      // edge(point, offset, "->")
+      // edge(point, offset, "<-")
+    },
+    for x in range(points.len()){
+      for y in range(points.len()){
+        if x != y {
+          edge(points.at(x), points.at(y), "->")
+        }
+      }
+    }
+  ),
+  caption: [Visualization of Repository Architecture]
+)
+
+A *peer-to-peer* architecture is a type of *decentralized* and often *distributed* structure in which individual *nodes* are both as suppliers and consumers of resources. In a P2P network, tasks are often shared amongst multiple *inter-connected peers* who each make a portion of their resources available to other peers, *without centralized coordination*.
+
+== Other
+
+=== Heterogenous Styles
+
+Large Software Systems *rarely confirm* to one single architectural model or style. They incorporate different styles at different levels of abstraction.
+
+- *Locationally Heterogenous*: Different areas of a systems have different structures
+- *Hirerarchitcally Heterogenous*: A component of one style, when decomposed, is structured like a different stlye.
+- *Simultaneously Heterogenous*: A system can be described with various architectural styles.
+
+=== Reference Models and Architectures
+
+A *reference model* is a division of functionality together with data flow between the resulting elements.
+
+A *reference architecture* is a reference model mapped into software components and data flows between those components.
