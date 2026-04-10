@@ -1,15 +1,16 @@
 #import "@preview/mmdr:0.2.1": mermaid
-#import "@preview/fletcher:0.5.8" as fletcher: diagram, node, edge
-#import fletcher.shapes: rect, diamond
+#import "@preview/fletcher:0.5.8" as fletcher: diagram, edge, node
+#import fletcher.shapes: diamond, rect
 
 #set document(title: [SWE30003 - Journal], author: "Hoàng Minh Đức")
 #set page(paper: "a4", numbering: "1")
-#set text(font: "TeX Gyre Pagella" , size: 14pt)
+#set text(font: "TeX Gyre Pagella", size: 14pt)
 #set heading(numbering: "1.1.")
 #show heading: set block(below: 1.5em)
 #set par(
   // first-line-indent: (amount: 1.5em, all: true),
-  spacing: 1.5em)
+  spacing: 1.5em,
+)
 #set list(spacing: 1em)
 #show quote: set pad(x: 3em)
 
@@ -29,25 +30,27 @@ The SDLC is described below:
 #let r = 1.6
 #let points = ()
 #let offset = (2, 2)
-#for i in range(1, 7){
+#for i in range(1, 7) {
   let x = -r * calc.cos(i * calc.pi / 3) + offset.at(0)
   let y = -r * calc.sin(i * calc.pi / 3) + offset.at(1)
   points.push((x, y))
 }
 
-#figure(diagram(
-  let (a1, a2, a3, a4, a5, a6) = points,
-  node-stroke: 1pt,
-  node(a1, [1. Planning]),
-  node(a2, [2. Defining]),
-  node(a3, [3. Design]),
-  node(a4, [4. Development]),
-  node(a5, [5. Testing]),
-  node(a6, [6. Deployment]),
-  for i in range(points.len() - 1){
-    edge(points.at(i), points.at(i + 1), "->")
-  }
-), caption: [Software Development Life Cycle]
+#figure(
+  diagram(
+    let (a1, a2, a3, a4, a5, a6) = points,
+    node-stroke: 1pt,
+    node(a1, [1. Planning]),
+    node(a2, [2. Defining]),
+    node(a3, [3. Design]),
+    node(a4, [4. Development]),
+    node(a5, [5. Testing]),
+    node(a6, [6. Deployment]),
+    for i in range(points.len() - 1) {
+      edge(points.at(i), points.at(i + 1), "->")
+    },
+  ),
+  caption: [Software Development Life Cycle],
 )
 
 In planning, the team must define what they are building and why (S1). Then, the specific product requirements must be defined and documented (S2).
@@ -72,25 +75,26 @@ Only functional v.s. non-functional
 
 There are various types of non-functional requirements:
 
-#figure(table(
-  columns: (auto, auto, auto),
-  inset: 5pt,
-  align: horizon,
-  table.header(
-    [*Requirement Type*], [*Definition*], [*Example*]
+#figure(
+  table(
+    columns: (auto, auto, auto),
+    inset: 5pt,
+    align: horizon,
+    table.header([*Requirement Type*], [*Definition*], [*Example*]),
+    [*Product Requirement*],
+    [Specify how the system should behave or perform (e.g. speed, reliability, functionality)],
+    [`latexmk` must call the LaTeX compiler enough times to resolve all references],
+
+    [*Organizational Requirement*],
+    [Requirements derived from organizational policies, standards, or processes],
+    [The system must conform to the process defined in an internal policy document],
+
+    [*External Requirement*],
+    [Requirements arising from external factors such as laws, regulations, or interoperability needs],
+    [The system must allow users to check whether their personal data is stored, in compliance with data protection laws],
   ),
-  [*Product Requirement*],
-  [Specify how the system should behave or perform (e.g. speed, reliability, functionality)],
-  [`latexmk` must call the LaTeX compiler enough times to resolve all references],
-
-  [*Organizational Requirement*],
-  [Requirements derived from organizational policies, standards, or processes],
-  [The system must conform to the process defined in an internal policy document],
-
-  [*External Requirement*],
-  [Requirements arising from external factors such as laws, regulations, or interoperability needs],
-  [The system must allow users to check whether their personal data is stored, in compliance with data protection laws]
-), caption: [Requirement Types])
+  caption: [Requirement Types],
+)
 
 == Requirements Engineering
 
@@ -98,49 +102,50 @@ Requirements Engineering is the process of identifying, eliciting, analyzing, sp
 
 The requirements engineering process is as following:
 
-#figure(diagram(
-  node-stroke: 1pt,
-  spacing: 0.9cm,
-  let (a, b, c, d) = ((-1, 0), (0, 0), (1, 1), (2, 2)),
-  node(a, [Feasibility \ study]),
-  node(b, [Requirements \ Elicitation \ and Analysis]),
-  node(c, [Requirements \ Specification]),
-  node(d, [Requirements \ Validation]),
+#figure(
+  diagram(
+    node-stroke: 1pt,
+    spacing: 0.9cm,
+    let (a, b, c, d) = ((-1, 0), (0, 0), (1, 1), (2, 2)),
+    node(a, [Feasibility \ study]),
+    node(b, [Requirements \ Elicitation \ and Analysis]),
+    node(c, [Requirements \ Specification]),
+    node(d, [Requirements \ Validation]),
 
-  let (e, f, g, h) = ((-1, 2), (0, 2), (1, 3), (2, 4)),
-  node(e, [Feasibility \ Report]),
-  node(f, [System \ Models]),
-  node(g, [User and System \ Requirements]),
-  node(h, [Requirements \ document]),
+    let (e, f, g, h) = ((-1, 2), (0, 2), (1, 3), (2, 4)),
+    node(e, [Feasibility \ Report]),
+    node(f, [System \ Models]),
+    node(g, [User and System \ Requirements]),
+    node(h, [Requirements \ document]),
 
-  edge(a, b, "-|>"),
-  edge(b, "d", c, "-|>"),
-  edge(c, "u", b, "-|>"),
-  edge(c, "d",  d, "-|>"),
-  edge(d, "u", c, "-|>"),
+    edge(a, b, "-|>"),
+    edge(b, "d", c, "-|>"),
+    edge(c, "u", b, "-|>"),
+    edge(c, "d", d, "-|>"),
+    edge(d, "u", c, "-|>"),
 
-  edge(a, e, "-|>"),
-  edge(b, f, "-|>"),
-  edge(f, (0, 3.75), (2, 3.75), "-|>"),
-  edge(g, "d", h, "-|>"),
-  edge(d, h, "-|>")
-),
-caption: [Requirements Engineering process])
+    edge(a, e, "-|>"),
+    edge(b, f, "-|>"),
+    edge(f, (0, 3.75), (2, 3.75), "-|>"),
+    edge(g, "d", h, "-|>"),
+    edge(d, h, "-|>"),
+  ),
+  caption: [Requirements Engineering process],
+)
 
 and has some activities:
 
 #table(
   columns: (auto, auto),
   inset: 5pt,
-  table.header(
-    [*Activity*], [*Function*]
-  ),
+  table.header([*Activity*], [*Function*]),
 
   align: horizon,
   [*Feasibility study*], [Determine if the *user needs can be satisfied* with the available technology and budget.],
   [*Requirements elicitation*], [Find out what *system stakeholders* require from the system],
   [*Requirements analysis*], [*Clarify/define/document the requirements* in a form understandable to the customer],
-  [*Requirements specification*], [*Define the requirements* in detail. (Written as a contract between client and  contractor.)]
+  [*Requirements specification*],
+  [*Define the requirements* in detail. (Written as a contract between client and  contractor.)],
 )
 
 === Requirements Elicitation
@@ -155,25 +160,29 @@ Requirements Analysis require *collaboration* of people with different backgroun
 
 = Software design
 
-#quote(block: true, [The design of a system determines a set of components and inter-component interfaces that satisfy a specified set of requirements.])
+#quote(
+  block: true,
+  [The design of a system determines a set of components and inter-component interfaces that satisfy a specified set of requirements.],
+)
 
 Software Design can be seen as *translating and refining* a (problem) domain model into abstractions that can be directly mapped to an implementation in a programming language.
 
-#figure(diagram(
-  node-stroke: 1pt,
-  let (a, b, c) = ((0, 0), (0, 1), (0, 2)),
-  let (d, e) = ((1, 1), (2, 1)),
-  node(a, [Requirements \ Specification]),
-  node(b, [Constraints:  \ resources, \ deadlines, etc]),
-  node(c, [Designer's \ decisions]),
-  node(d, [Design \ process]),
-  node(e, [Design \ Documentation]),
-  edge(a, d, "->"),
-  edge(b, d, "->"),
-  edge(c, d, "->"),
-  edge(d, e, "->"),
-),
-caption: [Software Design Process]
+#figure(
+  diagram(
+    node-stroke: 1pt,
+    let (a, b, c) = ((0, 0), (0, 1), (0, 2)),
+    let (d, e) = ((1, 1), (2, 1)),
+    node(a, [Requirements \ Specification]),
+    node(b, [Constraints:  \ resources, \ deadlines, etc]),
+    node(c, [Designer's \ decisions]),
+    node(d, [Design \ process]),
+    node(e, [Design \ Documentation]),
+    edge(a, d, "->"),
+    edge(b, d, "->"),
+    edge(c, d, "->"),
+    edge(d, e, "->"),
+  ),
+  caption: [Software Design Process],
 )
 
 Design Patterns conduct standard solutions to common software design problems.
@@ -224,7 +233,10 @@ Users tend to think about systems in terms of "features" (what system can do), e
 
 Scenarios: Users interact with a computer systems to complete a *task* or achieve a *goal*, which can be captures as a set of scenarios, i.e.
 
-#quote(block: true, attribution: [Example user story])[Mary browses the catalogue and adds desired items (chocolate) to the shopping basket. When she has finished shopping, Mary provides her address for delivery, credit card  information and then confirms the transaction. The system confirms her payment and e-mails a transaction record.]
+#quote(
+  block: true,
+  attribution: [Example user story],
+)[Mary browses the catalogue and adds desired items (chocolate) to the shopping basket. When she has finished shopping, Mary provides her address for delivery, credit card  information and then confirms the transaction. The system confirms her payment and e-mails a transaction record.]
 
 We note that we covered the *ideal interaction* (everything works properly). But:
 
@@ -270,10 +282,10 @@ Each Task Description has:
 - *Trigger*: The *event that starts* the task
 - *Precondition*: The condition that allows the task to occur
 - *Frequency*: *How often* the task occurs
-	- *Critical*: Special *high-pressure or large-scale* situations
+  - *Critical*: Special *high-pressure or large-scale* situations
 - *Subtasks*: A list of steps that make up the task
-	- Written in *neutral language*.
-	- Describe what the user and computer must accomplish _together_.
+  - Written in *neutral language*.
+  - Describe what the user and computer must accomplish _together_.
 - *Variants*: *Special cases or alternative ways* to perform subtasks.
 
 Good tasks should have:
@@ -326,15 +338,17 @@ classDiagram
 
 where the plus signs mean public attributes and the negative signs mean private attributes.
 
-#figure(mermaid(
-"classDiagram
+#figure(
+  mermaid(
+    "classDiagram
     class Rectangle{
         - width: int
         - length: int
         + calculate_area() int
         + calculate_parameter() int
     }",
-), caption: [Sample UML diagram]
+  ),
+  caption: [Sample UML diagram],
 )
 
 == Object-Oriented Design Process
@@ -372,14 +386,11 @@ CRC (_Class, Responsbility and Collaborations_) cards are used to capture and or
   table(
     columns: (auto, auto),
     inset: 5pt,
-    table.header(
-      [*Animal*], []
-    ),
+    table.header([*Animal*], []),
     [*Responsibility*], [*Collaboration*],
-    [Model The Animal], [Zoo]
-
+    [Model The Animal], [Zoo],
   ),
-  caption: [Example CRC Card]
+  caption: [Example CRC Card],
 )
 
 CRC cards are used to *explore* possible designs, and *are not specification of designs*.
@@ -423,17 +434,15 @@ Additional responsibilities can be uncovered by examining relationships between 
   table(
     columns: (auto, auto),
     inset: 6pt,
-    table.header(
-      [*Relationship Type*], [*Definition*],
-    ),
+    table.header([*Relationship Type*], [*Definition*]),
 
     [*Is-Kind-Of*], [Classes sharing a *common attribute* often share a *superclass* $=>$ common responsibilities],
 
     [*Is-Analogous-To*], [*Similarities* between classes can suggest undiscovered *superclasses*],
 
-    [*Is-Part-Of*], [*Distinguish* responsibilities between _part_ and _whole_]
+    [*Is-Part-Of*], [*Distinguish* responsibilities between _part_ and _whole_],
   ),
-  caption: [Some kinds of relationships between classes]
+  caption: [Some kinds of relationships between classes],
 )
 
 === Association and Aggregation (and Composition)
@@ -505,7 +514,7 @@ Collaborations are often described using *protocols*. Each participant in a prot
 
 For example:
 
-#quote(block: true,)[
+#quote(block: true)[
   *Drawing Element* is a class of the graphics editor. It defines three _roles_:
   + _Client_: Uses other elements of the application
   + _Child_: Can be contained in a Group Element
@@ -551,9 +560,10 @@ All methods of a class should be divided into two non-overlapping categories:
     columns: (auto, auto),
     inset: 5pt,
     table.header([*Queries*], [*Commands*]),
-    [Returns a result, *without changing the observable state*], [*Changes the (abstract) state* without returning a result.]
+    [Returns a result, *without changing the observable state*],
+    [*Changes the (abstract) state* without returning a result.],
   ),
-  caption: [Command-Query Seperation Principle]
+  caption: [Command-Query Seperation Principle],
 )
 
 For example:
@@ -574,16 +584,19 @@ For example:
 
 Decomposition (also called _divide-and-conquer_) is a process that helps to *manage the complexity* of a system.
 
-#figure(diagram(
-  node-stroke: 1pt,
-  let (a, b, c) = ((0, 0), (0, 1), (0, 2)),
-  node(a, [High(er) level-view]),
-  node(b, [Go lower \ add more details]),
-  node(c, [Good level of detail]),
-  edge(a, b, "-|>"),
-  edge(b, a, "-|>", bend: 20deg),
-  edge(b, c, "-|>")
-), caption: [Decomposition Process])
+#figure(
+  diagram(
+    node-stroke: 1pt,
+    let (a, b, c) = ((0, 0), (0, 1), (0, 2)),
+    node(a, [High(er) level-view]),
+    node(b, [Go lower \ add more details]),
+    node(c, [Good level of detail]),
+    edge(a, b, "-|>"),
+    edge(b, a, "-|>", bend: 20deg),
+    edge(b, c, "-|>"),
+  ),
+  caption: [Decomposition Process],
+)
 
 There are two types of decomposition: _functional_ and _object-oriented_ decomposition.
 
@@ -594,18 +607,21 @@ There are two types of decomposition: _functional_ and _object-oriented_ decompo
     columns: (auto, auto, auto),
     inset: 10pt,
     align: horizon,
-    table.header(
-      [*Type*], [*How to Decompose?*], [*Issues*]
-    ),
+    table.header([*Type*], [*How to Decompose?*], [*Issues*]),
 
-    [*Functional*], [Decompose according to *functions* a system should perform], [
+    [*Functional*],
+    [Decompose according to *functions* a system should perform],
+    [
       - Naive: modern systems perform *more than one function*
       - Maintainability: System functions evolve, design affects whole system
-      - Interoperability: Interfacing with other system is difficult],
+      - Interoperability: Interfacing with other system is difficult
+    ],
 
-    [*Object-oriented*], [Decompose according to the *objects* a system is supposed to manipulate], [Needs to identify objects]
+    [*Object-oriented*],
+    [Decompose according to the *objects* a system is supposed to manipulate],
+    [Needs to identify objects],
   ),
-  caption: [Functional v.s. Object-oriented Decomposition]
+  caption: [Functional v.s. Object-oriented Decomposition],
 )
 
 == Coupling and Cohesion <coupling-cohesion>
@@ -616,16 +632,42 @@ Coupling and Cohesion are *measures* of *how well the parts of a system are tied
   table(
     columns: (auto, auto),
     inset: 10pt,
-    table.header(
-      [*Measure*], [*Definition*]
-    ),
+    table.header([*Measure*], [*Definition*]),
     [*Coupling*], [*inter-dependency* between system parts],
-    [*Cohesion*], [*intra-dependency* of a system part]
+    [*Cohesion*], [*intra-dependency* of a system part],
   ),
-  caption: [Coupling and Cohesion]
+  caption: [Coupling and Cohesion],
 )
 
 The goal of good OOD is to have *weak coupling* (system parts are independent and changing one shouldn't change others) and *strong cohesion* (code is tightly related, each module has one purpose)
+
+Some types relevant to enterprise computing include:
+
+#figure(
+  table(
+    columns: (auto, auto, auto),
+    inset: 5pt,
+    table.header([*Type of coupling*], [*Problem description*], [*Reduced by*]),
+    [*Functional*],
+    [One module *relies on* the *internal workings* of others],
+    [Well-defined API describing inputs/outputs],
+
+    [*Interface*],
+    [Interfaces *reflect* the *implementation details*],
+    [Avoid detailed mandatory params, use more general methods],
+
+    [*Data Structure*],
+    [Data passed between modules *reflects internal representations*, or is *over-constrained*],
+    [Explicitly define formats, allow multiple representations],
+
+    [*Temporal*],
+    [Client blocked while waiting response, process over-constrained],
+    [Async messages, explicitly define behavior in interface],
+
+    [*Address/URI*], [Addresses/Providers/URI change], [*Do not* hard code references, *virtualize* services],
+  ),
+  caption: [Some types of relevant coupling],
+) <coupling-table>
 
 = Patterns
 
@@ -666,19 +708,20 @@ Some example idioms include:
     columns: (auto, auto),
     align: horizon + center,
     inset: 5pt,
-    table.header(
-      [*Term*], [*Definition*]
-    ),
+    table.header([*Term*], [*Definition*]),
     [*Idiom*], [Idioms are *common programming techniques and conventions*, and are often _language-specfic_],
     [*Pattern*], [Patterns document *common solutions* to *design problems*, and are _language-independent_],
-    [*Libraries*], [Libraries are *collections of functions, procedures or abstractions* that can be used in many applications],
-    [*Frameworks*], [
+    [*Libraries*],
+    [Libraries are *collections of functions, procedures or abstractions* that can be used in many applications],
+
+    [*Frameworks*],
+    [
       Frameworks are *open libraries* that define the *generic architecture* of an application, and can be extended by adding or deriving new classes.
 
       Frameworks typically make use of *common idioms* and *patterns*
-    ]
+    ],
   ),
-  caption: [Definition of Idioms, Patterns, Libraries and Frameworks]
+  caption: [Definition of Idioms, Patterns, Libraries and Frameworks],
 )
 
 In traditional application architectures, *user code makes use of library functionality* in the form of procedures of classes. A framework _reverses_ this relationship by providing both *generic functionality* and *application architecture*. Frameworks therefore calls user classes.
@@ -770,7 +813,7 @@ $=>$ Architectures help to manage software complexity.
 == Architectural Styles
 
 An *Architectural Style* defines a *family of software systems* in terms of their *structural organization*. It expresses *components and their relationships* with the constraints of the application, and the associated
- _composition and design rules_ for the construction.
+_composition and design rules_ for the construction.
 
 Some popular architectural styles are:
 
@@ -792,9 +835,9 @@ Some popular architectural styles are:
     node(n, [Layer $n$]),
     edge(a, b, "->"),
     edge(b, d, "->"),
-    edge(d, n, "->")
+    edge(d, n, "->"),
   ),
-  caption: [Visualization of Layered Architecture]
+  caption: [Visualization of Layered Architecture],
 )
 
 A *layered architecture* organizes a system/module/component into a *set of layers* each of which *provide a set of services to the layer above* and *uses services from the layer below*.
@@ -816,9 +859,9 @@ Elements in each layer can only see other elements in the same layer, or the lay
     edge(a, b, "->"),
     edge(b, c, "->"),
     edge(c, d, "->"),
-    edge(d, e, "->")
+    edge(d, e, "->"),
   ),
-  caption: [Visualization of Dataflow Architecture]
+  caption: [Visualization of Dataflow Architecture],
 )
 
 In a data-flow architecture, each components perform *functional transformations* on its inputs to *create outputs*.
@@ -835,7 +878,7 @@ The data is organized so that each processing element (a _filter_) is discrete a
 #let points = ()
 #let offset = (2, 2)
 #let n = 4
-#for i in range(1, n + 1){
+#for i in range(1, n + 1) {
   let x = -r * calc.cos(i * calc.pi * 2 / n) + offset.at(0)
   let y = -r * calc.sin(i * calc.pi * 2 / n) + offset.at(1)
   points.push((x, y))
@@ -846,13 +889,13 @@ The data is organized so that each processing element (a _filter_) is discrete a
     node-stroke: 1pt,
 
     node(offset, [Repo], shape: rect),
-    for (idx, point) in points.enumerate(){
+    for (idx, point) in points.enumerate() {
       node(point, [Component #(idx + 1)], shape: rect)
       edge(point, offset, "->")
       edge(point, offset, "<-")
     },
   ),
-  caption: [Visualization of Repository Architecture]
+  caption: [Visualization of Repository Architecture],
 )
 
 In a *repository architecture*, all data is managed in a *central repository* that is *accessible to all system components*. Components do not interact directly, only through the repository.
@@ -867,14 +910,14 @@ Howver, this means that components must agree on a repository data model, there 
     spacing: 0.75cm,
     let c = (2, 1.5),
     node(c, [Central Registry]),
-    for (i, v) in ("1", "2", "...", "n").enumerate(){
+    for (i, v) in ("1", "2", "...", "n").enumerate() {
       node((0, i), [Client #v])
       edge((0, i), c, "<->")
       node((4, i), [Server #v])
       edge((4, i), c, "<->")
-    }
+    },
   ),
-  caption: [Visualization of client-server architecture]
+  caption: [Visualization of client-server architecture],
 )
 
 In a *client-server architecture*, application logics and services are *distributed to a number of client and server subsystems*, each (potentially) running on a different machine and communication through the network.
@@ -889,14 +932,14 @@ Some advantages are straightforward distribution data, effective use of networke
     spacing: 2cm,
     let c = (2, 1.5),
     node(c, [Observable]),
-    for (i, v) in ("1", "2").enumerate(){
+    for (i, v) in ("1", "2").enumerate() {
       node((0, i + 1), [Observer \##i])
       edge((0, i + 1), c, "<-", label: "Event")
       // node((4, i), [Server \##i])
       // edge((4, i), c, "<-")
-    }
+    },
   ),
-  caption: [Visualization of client-server architecture]
+  caption: [Visualization of client-server architecture],
 )
 
 
@@ -910,7 +953,7 @@ In an *event-driven architecture*, components perform services *in reaction to e
 #let points = ()
 #let offset = (2, 2)
 #let n = 4
-#for i in range(1, n + 1){
+#for i in range(1, n + 1) {
   let x = -r * calc.cos(i * calc.pi * 2 / n + calc.pi / 4) + offset.at(0)
   let y = -r * calc.sin(i * calc.pi * 2 / n + calc.pi / 4) + offset.at(1)
   points.push((x, y))
@@ -921,23 +964,43 @@ In an *event-driven architecture*, components perform services *in reaction to e
     node-stroke: 1pt,
 
     // node(offset, [Repo], shape: rect),
-    for (idx, point) in points.enumerate(){
+    for (idx, point) in points.enumerate() {
       node(point, [Peer #(idx + 1)], shape: rect)
       // edge(point, offset, "->")
       // edge(point, offset, "<-")
     },
-    for x in range(points.len()){
-      for y in range(points.len()){
+    for x in range(points.len()) {
+      for y in range(points.len()) {
         if x != y {
           edge(points.at(x), points.at(y), "->")
         }
       }
-    }
+    },
   ),
-  caption: [Visualization of Repository Architecture]
+  caption: [Visualization of Repository Architecture],
 )
 
 A *peer-to-peer* architecture is a type of *decentralized* and often *distributed* structure in which individual *nodes* are both as suppliers and consumers of resources. In a P2P network, tasks are often shared amongst multiple *inter-connected peers* who each make a portion of their resources available to other peers, *without centralized coordination*.
+
+== Architectural Tactics
+
+An *architectural tactic* is a *transformation on an architecture* or a *change to the input* to a system that results in the *improvement* of specific quality attributes.
+
+Examples:
+
+- *Information Hiding* is a transformation on an architecture that improves *modifiability*
+- *Redundancy* is a transformation on an architecture that improves *availability, reliability, and/or performance*.
+- *Reducing the arrival rate of requests* is a change to the input of a system that improves *latency/response time*.
+
+Examples of various tactics:
+
+- *Scalability*: Scalability consists of *vertical scaling* (increase *power* of existing hardware) and *horizontal scaling* (increase *quantity* of hardware)
+- *Availability*
+- *Modifiability*
+- *Performance*
+- *Security*
+
+Patterns implement several tactics, and any implementation of patterns also makes choices about tactics.
 
 == Other
 
@@ -954,3 +1017,100 @@ Large Software Systems *rarely confirm* to one single architectural model or sty
 A *reference model* is a division of functionality together with data flow between the resulting elements.
 
 A *reference architecture* is a reference model mapped into software components and data flows between those components.
+
+= Web Services
+
+== Definitions
+
+In order to introduce Web Services, we need some definitions:
+
+- *The Web*, which consists of:
+  - *Documents*, that are hosted by *servers* and read/used by *clients*
+
+The web is *distributed*, *searchable*, *addressable*, *extensible* and *unbounded*
+
+*Enterprise (software) systems* are systems that are _distributed_, featuring *business process* that are *cross-organization*, *cross-geography*, *large-scale* and *addressable*.
+
+A *software service* is beyond a component, that is, it is *independently deployable*, *self-contained*, *self-describing*, *discoverable*, *composable*. Software services _do not have to be_ on the web.
+
+== Concepts
+
+Some other concepts include:
+
+- *Functional Description* details the operational characteristics that define the overall behavior of the service
+- *Non-functional Description* targets service quality attributes, i.e. _cost_, _performance metrics_ (response time / accuracy), _security_, etc
+
+- *Stateless services* are services that can be invoked repeatedly *without having to maintain context or state*.
+- *Stateful services* are services that *require* their context to be *preserved* from one invocation to another.
+
+#quote(
+  block: true,
+  attribution: [Cambridge Dictionary],
+)[*Granularity* is the quality of *including a lot of small details*]
+
+- *Service granularity*: Simple services are discrete (_atomic_) in nature, while complex services are _coarse-grained_, as these involve interactions with other services and possibly end-users in single or multiple sessions.
+  - Corase-grained communication implies *larger and richer* data structures (i.e. XML, JSON)
+
+- *Synchronous communication* is *synchronized* between two communicating systems which *both* must be *up and running*.
+  - This means that execution at the client's side is *interrupted* to execute the call
+- *Asynchronous communication* where the caller employs a *send-and-forget* approach that allows it to continue after it send the message.
+  - This means that execution at the client's side is *continued* after it sends the request.
+  - The sending application *assumes* that the *message will arrive safely* at its *destination* at some point in time.
+
+#figure(
+  diagram(
+    node-stroke: 1pt,
+    let (a, b, c) = ((0, 0), (1, 0), (2, 0)),
+    let (d) = (1, 1),
+    let (e, f, g) = ((0, 2), (1, 2), (2, 2)),
+    node(a, [Synchronous \ Client]),
+    node(c, [Asynchronous \ Client]),
+
+    node(d, [Service \ on Server ]),
+    node(e, [Continue]),
+    node(g, [Continue]),
+    edge(a, d, "->", label: [Calls]),
+    edge(a, e, "-->", label: [Waits for \ server to \ reply]),
+    edge(c, d, "->", label: [Calls]),
+    edge(c, g, "->", label: [Continues execution \ while waiting], label-side: left),
+    edge(d, e, "->", label: [Returns]),
+    edge(d, g, "->", label: [Returns]),
+  ),
+  caption: [Sync vs Async communication],
+)
+
+- The *Service interface* defines service *functionality* that is *visible to the external world* and *provides the means to access* this functionality.
+  - The services describes its interface, i.e. the operations available, parameters, data types, etc.
+- The *Service Implementation* realizes a specific *service interface* whose implementation details are *hidden* from its users.
+
+== Some types of architectures/approaches
+
+=== Service-Oriented Architecture (SOA)
+
+SOA is fundamentally based on *client-server* style, and based on interaction between *decoupled services* and *end-users application*, that are associated with *messages* and governed by *policies*.
+
+These services are *distributed in a network*, via *published and discoverable* interfaces.
+
+#figure(
+  diagram(
+    node-stroke: 1pt,
+    spacing: 3cm,
+    let (a, b, c) = ((0, 0), (1, 0), (2, 0)),
+    node(a, [Service \ Client]),
+    node(b, [Service \ Registry]),
+    node(c, [Service \ Provider]),
+    edge(c, b, "->", [Publishes to]),
+    edge(a, b, "->", [Finds services \ in], bend: -20deg),
+    edge(a, c, "<->", [Bind], bend: 30deg),
+  ),
+  caption: [SOA Visualization],
+)
+
+SOA is based on *client-server*, which has the following sub-styles:
+
+- *Remote Procedure Calls (RPC)*: It is an *object-oriented approach* to distributed computing, and uses a *synchronous* communication. RPC-style programming leads to *tight coupling* of interfaces and applications.
+  - In an RPC environment each application needs to *know the intimate detail* of the *interface* of every other application.
+- *Message-Oriented Middleware (MOM)*: It is an architecture that involves *passing data between applications* using a *common communication channel* that carries *self-contained messages*. Messages are sent and received *asynchronously*.
+  - The *messaging system* is responsible for *managing the connection points between clients* and for *managing multiple channels of communication* between the connection ports.
+- *Resource-oriented Architecture*: The *resources* are exposed on a network, uniquely identified. The *application* is a *series of linked resources updates* between *clients* and *servers*.
+- *Event Driven Architectures (EDA)*:
