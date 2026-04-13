@@ -185,6 +185,8 @@ Software Design can be seen as *translating and refining* a (problem) domain mod
   caption: [Software Design Process],
 )
 
+The role of software design is to *bridge the gap* between *requirements* and *implementation*. It assists software engineers to develop software solution to a given set of requirements by help enabling *early verification* of software solutions, and to produce a *blueprint* for implementation. It also *enhances the communication* between project stakeholders.
+
 Design Patterns conduct standard solutions to common software design problems.
 
 = Abstractions and Models
@@ -808,6 +810,8 @@ Furthermore:
 - Reference Architectures support the construction of software with well-defined properties.
 - Guidelines help to choose suitable architectures given the problem domain or required quality attributes.
 
+
+
 $=>$ Architectures help to manage software complexity.
 
 == Architectural Styles
@@ -1083,9 +1087,8 @@ Some other concepts include:
   - The services describes its interface, i.e. the operations available, parameters, data types, etc.
 - The *Service Implementation* realizes a specific *service interface* whose implementation details are *hidden* from its users.
 
-== Some types of architectures/approaches
 
-=== Service-Oriented Architecture (SOA)
+== Service-Oriented Architecture (SOA)
 
 SOA is fundamentally based on *client-server* style, and based on interaction between *decoupled services* and *end-users application*, that are associated with *messages* and governed by *policies*.
 
@@ -1113,4 +1116,162 @@ SOA is based on *client-server*, which has the following sub-styles:
 - *Message-Oriented Middleware (MOM)*: It is an architecture that involves *passing data between applications* using a *common communication channel* that carries *self-contained messages*. Messages are sent and received *asynchronously*.
   - The *messaging system* is responsible for *managing the connection points between clients* and for *managing multiple channels of communication* between the connection ports.
 - *Resource-oriented Architecture*: The *resources* are exposed on a network, uniquely identified. The *application* is a *series of linked resources updates* between *clients* and *servers*.
-- *Event Driven Architectures (EDA)*:
+- *Event Driven Architectures (EDA)*: The architecture depends on event *emitters* and *consumers*, which promote *further decoupling* of business processes. One event can be consumed by various processes, and emitters don't care who consumes the event.
+
+== Web application architectural styles and middleware
+
+There are two standard approaches to web services, and different "protocol patterns" suit various architectural styles:
+
+=== Web Service Standard: WS\*, SOAP and WSDL
+
+*Web Service Standards* (WS\*) is based on the evolution of the *enterprise computing middleware* approach: i.e. MoM. *Standards* are needed, so the (enterprise) systems can interoperate. It defines a standard *lightweight XML-based* messaging format called *SOAP* (Simple Object Access Protocol), that can use multiple *application protocols* such as HTTP, HTTPS, etc, for transport.
+
+SOAP allows applications to pass *messages and data* back and forth between disparate systems in a *distributed environment*, enabling *remote method invocation*. Messages are seen as *envelopes* where the application *encloses the data* to be sent. A SOAP message consists of an `<Envelope>` element containing an optional `<Header>`, which contains *blocks of information* relevant to how the message is to be processed, and a mandatory `<Body>` element which contains the main end-to-end conveyed information. The contents of these elements are not a part of the SOAP standard.
+
+It is *lightweight*, since it only posesses two fundamental properties:
+- Send and receive *HTTP* (or other protocols) packets
+- Process *XML* messages.
+
+
+SOAP overcomes problems of *conventional distributed object models*:
+- It *does not require* uniform object model accross applications
+- It features *loose-coupling* and *strong encapsulation* for applications.
+- It is designed to work with WSDL
+- It uses *HTTP*, which work over firewalls or proxy servers
+
+Many big vendors develop middleware products to support the standards-based approach. An *application protocol* (SOAP) views/uses *HTTP* as a *transport protocol* to carry its messages.
+
+It also has *calls/messages* defined and exchanged by the machine using *XML*.
+
+There are four common types of operations that represent possible combinations of input/output messages:
+
+#figure(
+  diagram(
+    node-stroke: 1pt,
+    let (a, b) = ((1, 0), (5, 0)),
+    node(a, [Client]),
+    node(b, [Server]),
+    node((0, 0), [One-way Messaging:], stroke: 0pt),
+    edge(a, b, [SOAP Message], "->", bend: 0deg, stroke: 1pt),
+    // edge(b, a, [No response], "-->", bend: 10deg),
+
+    let (c, d) = ((1, 2), (5, 2)),
+    node(c, [Client]),
+    node(d, [Server]),
+    node((0, 2), [Request/Response Messaging:], stroke: 0pt),
+    edge(c, d, [1. SOAP Request], "->", bend: 10deg, stroke: 1pt),
+    edge(d, c, [2. SOAP Response], "->", bend: 10deg, stroke: 1pt),
+
+    // NOTIFICATION MESSAGING (corrected)
+    let (e, f) = ((1, 4), (5, 4)),
+    node(e, [Client]),
+    node(f, [Server]),
+    node((0, 4), [Notification Messaging:], stroke: 0pt),
+    edge(f, e, [SOAP Notification], "->", bend: 0deg, stroke: 1pt),
+
+    // SOLICIT/RESPONSE MESSAGING (corrected)
+    let (g, h) = ((1, 6), (5, 6)),
+    node(g, [Client]),
+    node(h, [Server]),
+    node((0, 6), [Solicit/Response Messaging:], stroke: 0pt),
+    edge(h, g, [1. SOAP Request Message], "->", bend: 10deg, stroke: 1pt),
+    edge(g, h, [2. SOAP Answer Message], "->", bend: 10deg, stroke: 1pt),
+  ),
+  caption: [Message Exchange Patterns in WS\*],
+)
+
+Note that in *request/response messaging*, the client *request* happens *before* the server *response*; and in *solicit/response messaging*, the server *request* happens *before* the client *answer*.
+
+In order to work with SOAP, we use *WSDL* (Web Service Description Language). WSDL is a *XML-based service representation language* used to describe the *details* of the *complete interfaces* exposed by *Web Services*, and is therefore *the means to access a Web Service*. WSDL is *platform-independent* and meant to be created and read *by machines*.
+
+WSDL documents can be separated into distinct *sections*:
+- The *service interface definition* describes the *general web service interface structure*, which contains all the *operations* supported by the service, its *parameters* and *abstract data types*.
+- The *service implementation part* binds the *abstract interface* to a *concrete network address*, to a *specific protocol* and to *concrete data structures*.
+
+This enables each part to defined *separately* and *independently*, and *reused* by other parts. The combination of these two parts contains *sufficient information* to describe to the *service requester* how to *invoke* and *interact* with the service at a *provider's site*.
+
+To implement the WS\* standard, one needs to:
++ *Design and implment* an *object-oriented system*
++ *Generate* the *WSDL interface*
++ *Deploy* the service
++ *Publish* the WSDL interface (with APIs)
+
+=== REST: (Representational State Transfer)
+
+REST (Representational State Transfer) is a web architecture based on the *client-server architecture* that has *Purist* and *Hybrid* approaches. In *REST*, the *application state* is driven by the *client* updating resources across the *resource network* using *links* provided the servers. It is a *style* or *design guideline* , not a standard.
+
+*Resources* is something returned by an SQL Query, text file, etc.
+
+In the *Purist* approach, REST features:
+- *HTTP* as an *application protocol*
+- *Resource-oriented* architecture, as everything is referenced by *URIs*.
+- HTTP "verbs" (_requests_) have specific meaning:
+  - *GET*: Retrieve information on a resource
+  - *POST*: Create a new resource
+  - *PUT*: Modify an existing resource
+  - *DELETE*: Delete an existing resource
+
+REST can be implemented by:
++ *Design and implement* an object-oriented software system
++ *Deploy the service* (with API)
++ *Publish API interface*
+
+REST has 6 *constraints*:
+
+- *Uniform interface*: there should be an uniform way to interact with a given server irrespective of device or type of application
+- *Stateless*: The state *necessary* to handle the request is *contained* within the request itself.
+- *Cacheable*: Every response should include whether the response is *cachable* or not.
+- *Client-server*: REST applications should have a *client-server architecture*, where *clients* request resrouces and *servers* holding them.
+- *Layered system*: REST application architectures should be composed of *multiple layers*, with each layer *not knowing anything* about layers *other than its immediates*.
+
+=== Microservices
+
+Microservices are *modular, self-contained, deployable, scalable*, etc.
+
+= Documentation
+
+== Purpose of Documentation
+
+The purpose of documentation includes:
+- *Communication*: which communicate *ideas* about *possible software solutions* to stakeholders
+  - Who is the audience? What do they need? What means do they understand?
+- *Specification*: *Blueprint* for implementation
+  - Provide a detailed *design sepecification* for implementers, need to avoid *ambiguity*.
+
+The stakeholders include, (but not limited to): customers, end-users, developers, maintainers, business analyst (BA), system administrator (sysadmin), etc. All have *different interests and needs* for documentation
+
+== View:
+
+#quote(block: true, attribution: [Len Bass et al])[A view is a representation of a coherent set of architectural elements, as written by and read by stakeholders. It consists of a representation of a set of [architectural] elements and the relationships amongst them].
+
+*Views* focus on *specific aspects* of a software system by using appopriate *abstractions*.
+
+=== Categories of Views
+
+#figure(
+  table(
+    columns: (auto, auto, auto),
+    inset: 5pt,
+    align: horizon,
+    table.header([*Category*], [*Focuses on*], [*Question*]),
+    [*Component and connector*],
+    [Runtime *computational entities* (i.e. components), and their *means of communication* (connectors)],
+    [What are the *main executing components* and how do they *interact*?],
+
+    [*Allocation*],
+    [*Computational entities* and their *environment*],
+    [What *processing node* does each component *execute on*?],
+
+    [*Module*],
+    [*Code units* and their *responsibilities*],
+    [What *packaging mechanisms* are used to specify/implement each *architectural elements*? \ How are these packages *inter-related*? ],
+  ),
+  caption: [Categories of views],
+)
+
+=== Kruchten’s 4+1 View
+
+Kruchten's 4 + 1 view includes:
+
+- *Logical View* (Module View): concerned with the *functionality* that systems provide to *end-users*.
+- *Process View*
