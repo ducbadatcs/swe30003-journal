@@ -1271,7 +1271,158 @@ The stakeholders include, (but not limited to): customers, end-users, developers
 
 === Kruchten’s 4+1 View
 
+#figure(
+  diagram(
+    node-stroke: 1pt,
+    let n = 3,
+    let (a, b, c, d) = ((0, 0), (n, 0), (n, n), (0, n)),
+    let e = (n / 2, n / 2),
+    node(a, [Logical \ View]),
+    node(b, [Development \ View]),
+    node(c, [Physical \ View]),
+    node(d, [Process \ View]),
+    node(e, [Scenarios]),
+    edge(a, b, "->"),
+    edge(b, c, "->"),
+    edge(a, d, "->"),
+    edge(c, d, "->"),
+    edge(a, e, "-->"),
+    edge(b, e, "-->"),
+    edge(c, e, "-->"),
+    edge(d, e, "-->"),
+  ),
+  caption: [Visualization of Kruchten's 4 + 1 view],
+)
+
 Kruchten's 4 + 1 view includes:
 
 - *Logical View* (Module View): concerned with the *functionality* that systems provide to *end-users*.
-- *Process View*
+- *Process View* (Component and Connector View): focuses on *system processes* (i.e. *components*) and how they *communicate*; address *concurrency*, *distribution*, *performance*, etc
+- *Development View* (Allocation View): *illustrates* a system from a *developer's perspective*, concerned with *software management*.
+- *Physcial View* (Allocation View): concerned with *mapping of components* onto *processing* and *communication* nodes
+
+*Scenarios* are *illustrations of architectural solutions* using *selected use cases*. It *describes sequences of interactions* between *system processes*, used to *illustrate* and *verify* the architectural design, and serve as a starting point for *tests* and *architectural prototypes*.
+
+== IEEE Standard 1471
+
+IEEE 14741471 provides definitions and a *meta-model* for the *description* of software architectures. It assumes that an architecture exists to address to specific *stakeholder concerns*., and that *architectural descriptions* are *multi-view* (no single view captures all stakeholder concerns).
+
+It separates the notion of *view* from *viewpoint*, where a *viewpoint* identifies the *set of concerns* and the *representations/modeling techniques*, used to describe an architecture to address those concerns. It provides for capturing *rationale* and inconsistencies/unresolved issues between the views within a single *architecture dsecription*.
+
+*Viewpoints* are specified by *name* (i.e. "Capability"), the *stakeholders addressed* (i.e. "clients, producers, developers"), the *stakeholder concerns* to be addressed (i.e. "how is functionality packaged?"), the *viewpoint language / modeling, etc* (i.e. components via UML diagrams), and the *source*.
+
+Views are *well-formed*: each view corresponds to *exactly one viewpoint*, a *viewpoint* is a *pattern* for constructing *views*, and define the *rules* on *views*.
+
+IEEE 1471 is "agnostic" on where viewpoints come from, it defines templates how viewpoints are declared; and each concern of a system is addressed by one or many architectural views.
+
+== Notations
+
+*Graphical Notations* are a popular approach to document *software architectures* using *graphical notations*. They are generally easy to understand and use, but if not used systematically, may lead to ambiguity. They do not lend themselves for further analysis. Their main purpose is *communication, not specification*
+
+The _de facto_ standard for graphical notation is *UML*, which *reduces risks* by *documenting assumptions* (domain models, requirements, etc), represents *industry standard* (which means more tool support, more understanding), is "reasonably" *well-defined*, and *open* (stereotypes, tags and constraints to extend basic constructs).
+
+There are also *architectural description languages*, which can be characterized as very-high level "programming" languages. They exhibit many properties of a programming language, but *may not be computationally complete*. They feature basic building blocks for *high-level architectural elements* such as *components*, *connectors*, *configuration*; and _subsume_ some *formal semantic model*. Their main purpose is *specification, not communication*
+
+== Design Evaluation
+
+Evaluating design helps:
+
+- Early detection of *design flaws*, which can *improve quality of designs* and presents oppoturnities to *fix flaws before code is written*.
+- Early verification of *architectural drivers*, with a focus on *quality attributes*.
+- Enhance *motivation* for improved design documentation
+- Validate *requirements*
+
+$=>$ Validate both *quality* and *risks*
+
+The benefits are:
+
+- Improved *articulation* and *verification* of *critical architectural drivers* and *quality attributes*; therefore improving *software quality*
+- Forces *clear explanation* and *documentation* of *critical design issues*, in particular at an architectural level; therefore improving *architectural rationale*
+- Enhances *communciation* between *stakeholders*.
+
+and costs are:
+- Time
+- Money
+- ...Frustration
+
+=== Architecture Tradeoff Analysis Method
+
+We can use the *Architecture Tradeoff Analysis Method (ATAM)*, which is a "heavy weight method" to systematically analyze software architectures. It is a comprehensive process with *5 phases / 9 stages*, involves *most stakeholders*, take up *several days*, and delivers *comprehensive risk analysis* of a given architectural design.
+
+#figure(
+  diagram(
+    node-stroke: 1pt,
+    let (a, b, c) = ((0, 0), (1, 0), (2, 0)),
+    node(a, [Business \ Drivers]),
+    node(b, [Quality \ Attributes]),
+    node(c, [Scenarios]),
+    edge(a, b, "->"),
+    edge(b, c, "->"),
+
+    let (d, e, f) = ((0, 1), (1, 1), (2, 1)),
+    node(d, [Software \ Architecture]),
+    node(e, [Architectural \ Approaches]),
+    node(f, [Architectural \ Decisions]),
+    edge(d, e, "->"),
+    edge(e, f, "->"),
+
+    let (g) = (3.5, 0.5),
+    node(g, [Analysis]),
+    edge(c, g, "->"),
+    edge(f, g, "->"),
+
+    let (h, i, j, k) = ((2.5, 2), (2.5, 2.5), (2.5, 3), (2.5, 3.5)),
+    node(h, [Tradeoffs]),
+    node(i, [Sensitivity Points]),
+    node(j, [Non-risks]),
+    node(k, [Risks]),
+
+    for loc in (2, 2.5, 3, 3.5) {
+      edge(g, (3.5, loc))
+      edge((3.5, loc), (2.5, loc), "->")
+    },
+    let l = (1, 3.5),
+    node(l, [Risk themes]),
+    edge(k, l, "->", [distilled into]),
+
+    edge(l, (-1, 3.5), "->"),
+    for loc in (0, 1) {
+      // edge((-1, 3.5), (-1, loc))
+      if (loc == 0) {
+        edge((-1, 3.5), (-1, loc), [Impact])
+      } else {
+        edge((-1, 3.5), (-1, loc))
+      }
+      edge((-1, loc), (0, loc), "->")
+    },
+  ),
+  caption: [Visualization of ATAM],
+)
+
+The output of ATAM is a *concise presentation* of the architecture, the defined and evaluated *business goals*; *quality requirements* via a *collection of scenarios*; mapping of *architectural decisions* to *quality requirements*, and a set of *risks, tradeoffs, and sensitvity points*.
+
+The ebenfits of ATAM include:
+- Get *stakeholders* together
+- Enforces critical *quality goals*
+- Prioritization of *conflicting goals*
+- Forces clear *architecture presentation/rationale*
+- Improves quality of *architectural documentation*
+- *Risk identification* early in the development lifecycle
+
+However, ATAM is "too heavy", therefore, we'll identify "the essentials":
+
+- *Architectural drivers*
+- Prioritized *quality attributes*, using a *quality utility tree*
+- *Scenarios*
+- *Risk Assessment*.
+
+=== Quality Utility Tree
+
+A *quality utility tree* is built to *identify and prioritize* the most important *quality requirements*. It works by
+
++ Select the *most important quality attributes* to the *high-level nodes* (performance, modifiability, security, etc)
++ Add specific *quality requirements* at the next level
++ *Scenarios* are the *leaves* of the utility tree
++ Assess leaves based on *importance* and *degree of difficulty*
+
+It results in a *characterization* and a *prioritization* of specific quality attribute requirements.
